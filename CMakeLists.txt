@@ -96,7 +96,7 @@ file(GLOB_RECURSE SRCS src/*)
 
 
 # To change the name of your executable, change "gc_project" in the lines below to whatever you want
-add_executable(pgm "${SRCS}" src/initialization.cpp src/initialization.hpp src/application.cpp src/application.hpp src/triangulate.cpp src/triangulate.hpp src/utils.cpp src/utils.hpp src/meshData.cpp src/meshData.hpp src/GradientDescent.cpp src/GradientDescent.hpp src/sphere.cpp src/sphere.hpp src/shape.cpp src/shape.hpp src/cylinder.cpp src/cylinder.hpp src/LBFGSopt.cpp src/LBFGSopt.hpp src/tinyAD.cpp src/tinyAD.hpp)
+add_executable(pgm "${SRCS}")
 target_include_directories(pgm PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/")
 target_include_directories(pgm PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/deps/libigl/include")
 

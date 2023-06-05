@@ -54,12 +54,6 @@ namespace Utils {
     void ARAP(VertexPositionGeometry& geom, VertexPositionGeometry& geomValues,
                   const MeshInfo& meshData, const std::unordered_map<size_t, size_t>& matching, const double c);
 
-    void ARAP(class ARAP& arapHolder, VertexPositionGeometry& geom, VertexPositionGeometry& geomValues,
-                  const MeshInfo& meshData, const std::unordered_map<size_t, size_t>& matching);
-
-    void harmonicSurface(VertexPositionGeometry& geom, VertexPositionGeometry& geomValues,
-                         const MeshInfo& meshData, const std::unordered_map<size_t, size_t>& matching);
-
     AABB getAABB(const VertexPositionGeometry& geom);
 
     bool checkIntersection(const Triangle &t1, const Triangle &t2) noexcept;
@@ -69,16 +63,6 @@ namespace Utils {
 
     std::tuple<std::unique_ptr<ManifoldSurfaceMesh>, std::unique_ptr<VertexPositionGeometry>>
         createIcoSphere(double scale, int level, Vector3 center = Vector3::zero());
-
-    Eigen::Matrix3d eulerAngles(double psi, double phi, double theta);
-
-    std::tuple<std::unique_ptr<ManifoldSurfaceMesh>, std::unique_ptr<VertexPositionGeometry>>
-        mixMeshes(const VertexPositionGeometry& g1, const VertexPositionGeometry& g2);
-
-    void initPCA(VertexPositionGeometry& geom, VertexPositionGeometry& geomTarget, const MeshInfo& meshData, const std::unordered_map<size_t, size_t>& matching);
-    Plane PCA(std::vector<Vector3>& data);
-    Eigen::Matrix3d findRotationToFitVectors(Eigen::Vector3d a, Eigen::Vector3d b);
-    double optimizeAngle(VertexPositionGeometry& geom, VertexPositionGeometry& geomTarget, const Vector3& u, const Vector3& shift, const MeshInfo& meshData, const std::unordered_map<size_t, size_t>& matching);
 
     Eigen::Vector3d to_eigen(const Vector3& v);
     Vector3 to_geometrycentral(const Eigen::Vector3d& v);

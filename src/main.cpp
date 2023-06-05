@@ -3,11 +3,7 @@
 
 int main() {
 
-    Application::init();
-
-
-    //polyscope::registerSurfaceMesh("test", V2, F2);
-
+    Application::init("../../data");
 
     return EXIT_SUCCESS;
 }

@@ -24,17 +24,11 @@ namespace PMP = CGAL::Polygon_mesh_processing;
 
 
 void triangulate(std::unique_ptr<VertexPositionGeometry>& geom, std::unique_ptr<ManifoldSurfaceMesh>& mesh, double size);
-void triangulateLiepa(std::unique_ptr<VertexPositionGeometry>& geom, std::unique_ptr<ManifoldSurfaceMesh>& mesh, double size);
 void triangulateLiepaFair(std::unique_ptr<VertexPositionGeometry>& geom, std::unique_ptr<ManifoldSurfaceMesh>& mesh);
 
-std::tuple<std::unique_ptr<ManifoldSurfaceMesh>, std::unique_ptr<VertexPositionGeometry>>
-cleanMesh(VertexPositionGeometry& geom, VertexPositionGeometry& geomFlat);
 
 std::tuple<std::unique_ptr<ManifoldSurfaceMesh>, std::unique_ptr<VertexPositionGeometry>>
 toGC(CDT& cdt, std::map<Vertex_handle, std::size_t>& verticesIndex);
-
-std::tuple<std::unique_ptr<ManifoldSurfaceMesh>, std::unique_ptr<VertexPositionGeometry>>
-mixMeshes(VertexPositionGeometry& geom, VertexPositionGeometry& geomFlat);
 
 template <class InputIterator>
 void insert_with_info(CDT& cdt, InputIterator first,InputIterator last)
