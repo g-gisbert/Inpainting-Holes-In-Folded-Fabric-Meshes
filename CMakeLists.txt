@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16.0)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 
 project(pgm LANGUAGES C CXX)
 
@@ -71,19 +71,6 @@ endif()
 # == Deps
 add_subdirectory(deps/geometry-central)
 add_subdirectory(deps/polyscope)
-add_subdirectory(deps/LBFGSpp)
-add_subdirectory(deps/TinyAD)
-include_directories(deps/simplesvg)
-#include_directories(/Users/guillaumegisbert/Downloads/triangle)
-#link_directories(/Users/guillaumegisbert/Downloads/triangle)
-#add_subdirectory(deps/LBFGSpp)
-
-# OpenMp
-#find_package(OpenMP)
-#set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-#set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-#add_definitions(-fopenmp)
 find_package(OpenMP REQUIRED)
 
 find_package(CGAL REQUIRED)
@@ -102,7 +89,6 @@ target_include_directories(pgm PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/deps/libigl/i
 
 # add the args.hxx project which we use for command line args
 target_include_directories(pgm PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/deps/polyscope/deps/args")
-target_link_libraries(pgm geometry-central polyscope ${CGAL_LIBRARIES} lbfgspp -lm -I./deps/libigl/include/ OpenMP::OpenMP_CXX TinyAD)
+target_link_libraries(pgm geometry-central polyscope ${CGAL_LIBRARIES} -lm -I./deps/libigl/include/ OpenMP::OpenMP_CXX)
 target_precompile_headers(pgm PRIVATE src/pch.h)
 
-#target_link_libraries(gc_project geometry-central polyscope -lnlopt -lm -I./deps/libigl/include/)

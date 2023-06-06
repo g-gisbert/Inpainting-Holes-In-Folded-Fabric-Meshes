@@ -59,76 +59,21 @@ void ARAP::resolveConstraints(){
 void ARAP::solve(){
 
     resolveConstraints();
-    //initialGuess();
 
     std::chrono::time_point<std::chrono::system_clock> startLoop = std::chrono::system_clock::now();
     for(int iter = 0; iter < maxIter; ++iter){
         std::cout << iter << "/" << maxIter << std::endl;
 
-        std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
         std::vector<Eigen::Matrix3d> rotations = computeRotations();
-        std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
-        std::chrono::duration<double> elapsed_seconds = end - start;
-        std::cout << "computeRotations() : " << elapsed_seconds.count() << std::endl;
 
-        start = std::chrono::system_clock::now();
         computeNewPositions(rotations);
-        end = std::chrono::system_clock::now();
-        elapsed_seconds = end - start;
-        std::cout << "computeNewPositions() : " << elapsed_seconds.count() << std::endl;
+
     }
     std::chrono::time_point<std::chrono::system_clock> endLoop = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = endLoop - startLoop;
-    std::cout << "computeARAP() : " << elapsed_seconds.count() << std::endl;
+    std::cout << "compute ARAP : " << elapsed_seconds.count() << std::endl;
 }
 
-void ARAP::initialGuess(){
-    /* Naive Laplacian Editing */
-
-    std::cout << "test1" << std::endl;
-
-    Eigen::SparseMatrix<double> LTL = lapBeltrami.transpose() * lapBeltrami;
-    std::cout << "test2" << std::endl;
-    BlockDecompositionResult<double> decomp = blockDecomposeSquare(LTL, buildConstraintsVector(), true);
-    std::cout << "test3" << std::endl;
-
-    //std::function<float(int)>
-    auto solveL = [&decomp, &LTL, this](int coord) {
-
-        std::cout << "test4.1" << std::endl;
-        Vector<double> p(n);
-        for(size_t i = 0; i < n; ++i)
-            p[i] = geometryOriginal->vertexPositions[i][coord];
-        Vector<double> rhsVals = LTL * p;
-        std::cout << "test4.2" << std::endl;
-
-        Vector<double> rhsVals1, rhsVals2;
-        std::cout << "test4.3" << std::endl;
-        decomposeVector(decomp, rhsVals, rhsVals1, rhsVals2);
-        std::cout << "test4.4" << std::endl;
-
-        Vector<double> combinedRHS = rhsVals1 - decomp.AB * getEigenConstraint(coord);
-        std::cout << "test4.5" << std::endl;
-        Vector<double> Aresult = geometrycentral::solve(decomp.AA, combinedRHS);
-        std::cout << "test4.6" << std::endl;
-
-        Vector<double> result = reassembleVector(decomp, Aresult, getEigenConstraint(coord));
-        std::cout << "test4.7" << std::endl;
-
-        return result;
-
-    };
-
-    std::cout << "test4" << std::endl;
-    Vector<double> pX = solveL(0);
-    std::cout << "test5" << std::endl;
-    Vector<double> pY = solveL(1);
-    Vector<double> pZ = solveL(2);
-
-    std::cout << "test6" << std::endl;
-    for(size_t i = 0; i < n; ++i)
-        geometryDeformed.vertexPositions[i] = Vector3{pX[i], pY[i], pZ[i]};
-}
 
 std::vector<Eigen::Matrix3d> ARAP::computeRotations(){
 
@@ -151,8 +96,7 @@ std::vector<Eigen::Matrix3d> ARAP::computeRotations(){
 
         for(Edge e : vi.adjacentEdges()){
             Vertex vj = e.otherVertex(vi);
-            size_t j = vj.getIndex();
-            double wij = geometryOriginal->edgeCotanWeights[e];//lapBeltrami.coeffRef(i, j);
+            double wij = geometryOriginal->edgeCotanWeights[e];
             Vector3 eij_prime = geometryDeformed.vertexPositions[vi] - geometryDeformed.vertexPositions[vj];
             Vector3 eij = geometryOriginal->vertexPositions[vi] - geometryOriginal->vertexPositions[vj];
             Si += wij * toEigen(eij) * toEigen(eij_prime).transpose();
@@ -170,7 +114,6 @@ std::vector<Eigen::Matrix3d> ARAP::computeRotations(){
             Ri = svd.matrixV() * U.transpose();
         }
         rotations[i] = Ri;
-        //rotations[i] = Eigen::Matrix3d::Zero();
     }
     return rotations;
 }
@@ -179,7 +122,6 @@ void ARAP::computeNewPositions(std::vector<Eigen::Matrix3d>& R){
 
     auto toEigen = [](Vector3& v) { return Eigen::Vector3d(v.x, v.y, v.z); };
 
-    //Eigen::MatrixXd rhs = Eigen::MatrixXd::Zero(n, 3);
     Eigen::VectorXd rhsX = Eigen::VectorXd::Zero(n);
     Eigen::VectorXd rhsY = Eigen::VectorXd::Zero(n);
     Eigen::VectorXd rhsZ = Eigen::VectorXd::Zero(n);
@@ -189,8 +131,6 @@ void ARAP::computeNewPositions(std::vector<Eigen::Matrix3d>& R){
 
         if(std::vector<size_t>::iterator it = std::find(idConstraints.begin(), idConstraints.end(), i); it != idConstraints.end()){
             int id = std::distance(idConstraints.begin(), it);
-            //Eigen::Vector3d tmpRow ; tmpRow << ;
-            //rhs.row(i) = tmpRow;
             rhsX[i] = constraints[0][id]; rhsY[i] = constraints[1][id]; rhsZ[i] = constraints[2][id];
             continue;
         }
@@ -198,12 +138,11 @@ void ARAP::computeNewPositions(std::vector<Eigen::Matrix3d>& R){
         for(Edge e : vi.adjacentEdges()){
             Vertex vj = e.otherVertex(vi);
             size_t j = vj.getIndex();
-            double wij = geometryOriginal->edgeCotanWeights[e];//lapBeltrami.coeffRef(i, j);
+            double wij = geometryOriginal->edgeCotanWeights[e];
             Vector3 pi = geometryOriginal->vertexPositions[vi];
             Vector3 pj = geometryOriginal->vertexPositions[vj];
             Vector3 eij = pi - pj;
             Eigen::Vector3d rotEdge = (R[i] + R[j]) * toEigen(eij);
-            //rhsX.row(i) += wij/2 * rotEdge;
             rhsX[i] += wij/2 * rotEdge[0];
             rhsY[i] += wij/2 * rotEdge[1];
             rhsZ[i] += wij/2 * rotEdge[2];
@@ -252,7 +191,7 @@ Vector<double> ARAP::getEigenConstraint(int coord){
 Vector<bool> ARAP::buildConstraintsVector(){
     Vector<bool> constraintsVector(n);
     for(size_t i = 0; i < n; ++i)
-        constraintsVector[i] = (std::count(idConstraints.begin(), idConstraints.end(), i) == 0) ? true : false;
+        constraintsVector[i] = (std::count(idConstraints.begin(), idConstraints.end(), i) == 0);
     return constraintsVector;
 }
 
@@ -267,8 +206,4 @@ Eigen::Matrix3d ARAP::findRotationToFitVectors(Eigen::Vector3d a, Eigen::Vector3
 
     Eigen::Matrix3d R = Eigen::Matrix3d::Identity() + Vcross + Vcross*Vcross*(1.0/(1.0 + c));
     return R;
-}
-
-void ARAP::testFunc(){
-
 }

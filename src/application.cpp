@@ -133,10 +133,6 @@ void Application::make2DMesh() {
         }
     } while(startHe != he);
 
-    for (std::vector<size_t> elem : faces) {
-        std::cout << elem[0] << ", " << elem[1] << ", " << elem[2] << std::endl;
-        std::cout << matching[elem[0]] << ", " << matching[elem[1]] << ", " << matching[elem[2]] << std::endl;
-    }
 
     std::tie(mesh2D, geometry2D) = makeManifoldSurfaceMeshAndGeometry(faces, pts);
 
@@ -223,14 +219,11 @@ void Application::callback0() {
         meshData2D->precomputeData();
         polyscope::registerSurfaceMesh("Parametrisation", geometry2D->vertexPositions, mesh2D->getFaceVertexList());
 
-        Utils::ARAP(*geometry2D, *geometry, *meshData2D, matching, 0.5);
+        Utils::ARAP(*geometry2D, *geometry, *meshData2D, matching, 0.75);
         gd = new GradientDescent(*meshData2D);
 
         polyscope::registerSurfaceMesh("Optim", geometry2D->vertexPositions, mesh2D->getFaceVertexList());
         polyscope::getSurfaceMesh("Optim")->addVertexScalarQuantity("radius", meshData2D->repulsiveRadius);
-
-        std::unique_ptr<ManifoldSurfaceMesh> m;
-        std::unique_ptr<VertexPositionGeometry> g;
 
         changeState(OPTI_1D);
     }
@@ -254,8 +247,8 @@ void Application::callback1() {
         bendingEnergy = false;
         radioOption = true;
     }
-    if (ImGui::Checkbox("Toggle", &enableCollisions)) {
-        std::cout << "enableCollisionsenableCollisions : " << enableCollisions << std::endl;
+    if (ImGui::Checkbox("Enable collisions", &enableCollisions)) {
+        std::cout << "enableCollisions : " << enableCollisions << std::endl;
     }
 
     ImGui::Separator();

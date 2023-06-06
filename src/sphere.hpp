@@ -10,7 +10,6 @@ public:
     Sphere(Vector3 c, double _r) : center(c), r(_r) {
         std::unique_ptr<ManifoldSurfaceMesh> mesh;
         std::unique_ptr<VertexPositionGeometry> geometry;
-        //std::tie(mesh, geometry) = Utils::createCylinder(0.837, 2.330);
         std::tie(mesh, geometry) = Utils::createIcoSphere(r, 3, center);
         polyscope::registerSurfaceMesh("DebugSphere"+std::to_string(count++), geometry->vertexPositions, mesh->getFaceVertexList());
     }

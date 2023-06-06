@@ -9,7 +9,7 @@
 
 class Cylinder : public Shape {
 public:
-    Cylinder(Vector3 c, double _r, double _h, Eigen::Matrix3d  R_) : center(c), r(_r*1.05), h_2(_h/2), R(std::move(R_)) {
+    Cylinder(Vector3 c, double _r, double _h, Eigen::Matrix3d  R_) : center(c), r(_r), h_2(_h/2), R(std::move(R_)) {
         Eigen::Vector3d tmp = R * Eigen::Vector3d{0.0, 1.0, 0.0};
         up = Vector3{tmp[0], tmp[1], tmp[2]};
         std::unique_ptr<ManifoldSurfaceMesh> mesh;

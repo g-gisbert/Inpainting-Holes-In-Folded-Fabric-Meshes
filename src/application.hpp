@@ -7,7 +7,6 @@
 #include "meshData.hpp"
 #include "GradientDescent.hpp"
 #include "ARAP.hpp"
-#include "curvatureProcessing.hpp"
 
 enum State {
     CHOOSE_FILE = 0,

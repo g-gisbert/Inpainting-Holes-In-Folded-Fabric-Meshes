@@ -53,14 +53,6 @@ using namespace geometrycentral::surface;
 #include <igl/map_vertices_to_circle.h>
 
 
-
-// TinyAD
-#include <TinyAD/Support/GeometryCentral.hh>
-#include <TinyAD/ScalarFunction.hh>
-#include <TinyAD/Utils/NewtonDirection.hh>
-#include <TinyAD/Utils/NewtonDecrement.hh>
-#include <TinyAD/Utils/LineSearch.hh>
-
 // CGAL
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Constrained_Delaunay_triangulation_2.h>

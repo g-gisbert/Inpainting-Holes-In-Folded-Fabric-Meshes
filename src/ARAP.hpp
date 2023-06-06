@@ -16,7 +16,6 @@ public:
 
     ARAP(VertexPositionGeometry& geom);
     ~ARAP();
-    void testFunc();
     void addConstraint(int id, Vector3 value);
     void addNormalConstraint(int id, Vector3 value);
     void solve();
@@ -26,7 +25,6 @@ public:
 private:
 
     void resolveConstraints();
-    void initialGuess();
     std::vector<Eigen::Matrix3d> computeRotations();
     void computeNewPositions(std::vector<Eigen::Matrix3d>& R);
 
@@ -51,8 +49,5 @@ private:
     size_t n; // number of vertices
 
 };
-
-//Eigen::Vector3d toEigen(Vector3 v) { return Eigen::Vector3d(v.x, v.y, v.z); }
-//Vector3 fromEigen(Eigen::Vector3d v) { return {v(0), v(1), v(2)}; }
 
 #endif

@@ -63,13 +63,6 @@ namespace Utils {
         return AABB{min, max};
     }
 
-    bool checkIntersection(const Triangle& t1, const Triangle& t2) noexcept {
-        return CGAL::do_intersect(K::Triangle_3{K::Point_3{t1.v1.x, t1.v1.y, t1.v1.z},K::Point_3{t1.v2.x, t1.v2.y, t1.v2.z},
-                                         K::Point_3{t1.v3.x, t1.v3.y, t1.v3.z}},
-                           K::Triangle_3{K::Point_3{t2.v1.x, t2.v1.y, t2.v1.z},K::Point_3{t2.v2.x, t2.v2.y, t2.v2.z},
-                                         K::Point_3{t2.v3.x, t2.v3.y, t2.v3.z}});
-    }
-
     std::tuple<std::unique_ptr<ManifoldSurfaceMesh>, std::unique_ptr<VertexPositionGeometry>>
         createCylinder(double radius, double height, int N, Vector3 center, Eigen::Matrix3d R) {
 
@@ -111,9 +104,7 @@ namespace Utils {
 
     std::tuple<std::unique_ptr<ManifoldSurfaceMesh>, std::unique_ptr<VertexPositionGeometry>>
         createIcoSphere(double scale, int level, Vector3 center) {
-        /**
 
-        */
         const float X=.525731112119133606f;
         const float Z=.850650808352039932f;
         const float N=0.f;
@@ -160,6 +151,14 @@ namespace Utils {
 
         return {std::move(meshIco), std::move(geometryIco)};
     }
+
+
+    Eigen::Matrix3d eulerAngles(double psi, double phi, double theta) {
+        return Eigen::Matrix3d{{cos(psi)*cos(phi)-sin(psi)*cos(theta)*sin(phi), -cos(psi)*sin(phi)-sin(psi)*cos(theta)*cos(phi), sin(psi)*sin(theta)},
+                               {sin(psi)*cos(phi)+cos(psi)*cos(theta)*sin(phi), -sin(psi)*sin(phi)+cos(psi)*cos(theta)*cos(phi), -cos(psi)*sin(theta)},
+                               {sin(theta)*sin(phi), sin(theta)*cos(phi), cos(theta)}};
+    }
+
 
     Eigen::Vector3d to_eigen(const Vector3& v) {
         return Eigen::Vector3d{v.x, v.y, v.z};

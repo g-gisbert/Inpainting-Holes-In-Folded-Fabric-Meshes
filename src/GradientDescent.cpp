@@ -72,7 +72,6 @@ void GradientDescent::step(const bool bendingEnergy, const bool enableCollisions
     }
 
     update();
-
 }
 
 void GradientDescent::update() noexcept {
@@ -95,14 +94,13 @@ void GradientDescent::detectCollisions() noexcept {
         }
     }
 
-    // TODO : Vector3 & id struct + movable sphere
+    // Self-intersections
     for (const auto& [hashValue, vertexList] : spatialHashing) {
         for (const Point3d& p1 : vertexList) {
             for (const Point3d& p2 : vertexList) {
                 if (p1 == p2)
                     continue;
                 if (norm(p1.v - p2.v) < meshData.repulsiveRadius[p1.id]) {
-                    std::cout << "intersection : " << p1.id << ", " << p2.id << " / " << norm(p1.v - p2.v) << std::endl;
                     Vector3 u = (p1.v - p2.v).normalize();
                     grad[p1.id] -= 0.001*(mu / norm2(p1.v - p2.v)) * u;
                 }
@@ -116,30 +114,11 @@ void GradientDescent::detectCollisions() noexcept {
 void GradientDescent::updateSpatialHash() noexcept {
     VertexData<Vector3>& vp = meshData.geom.vertexPositions;
     spatialHashing.clear();
-    /*for (const Face& f : meshData.mesh.faces()) {
-        Halfedge he = f.halfedge();
-        Vertex v1 = he.vertex();
-        Vertex v2 = he.next().vertex();
-        Vertex v3 = he.next().next().vertex();
-        int hash1 = hash(vp[v1]);
-        int hash2 = hash(vp[v2]);
-        int hash3 = hash(vp[v3]);
-        Triangle t{vp[v1], vp[v2], vp[v3], f.getIndex()};
-        spatialHashing[hash1].insert(t);
-        spatialHashing[hash2].insert(t);
-        spatialHashing[hash3].insert(t);
-    }*/
 
     for (const Vertex& v : meshData.mesh.vertices()) {
         int h = hash(vp[v]);
         spatialHashing[h].push_back(Point3d{vp[v], v.getIndex()});
     }
-
-    /*VertexData<int> spatial(meshData.mesh);
-    for (const Vertex& v : meshData.mesh.vertices()) {
-        spatial[v] = hash(vp[v]);
-    }
-    polyscope::getSurfaceMesh("ARAP")->addVertexScalarQuantity("hash", spatial);*/
 
 }
 
@@ -148,4 +127,27 @@ int GradientDescent::hash(const Vector3 &v) const noexcept {
     int y = int(v.y / gridSize);
     int z = int(v.z / gridSize);
     return x + y * 10 + z * 100;
+}
+
+void GradientDescent::parseObjects() {
+    std::ifstream file("../../src/config.txt");
+    std::string line;
+
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        std::string type;
+        iss >> type;
+
+        if (type == "sphere") {
+            double x, y, z, r;
+            iss >> x >> y >> z >> r;
+            objects.push_back(std::make_unique<Sphere>(Vector3{x, y, z}, r));
+        } else if (type == "cylinder") {
+            double x, y, z, r, h, a1, a2, a3;
+            iss >> x >> y >> z >> r >> h >> a1 >> a2 >> a3;
+            objects.push_back(std::make_unique<Cylinder>(Vector3{x, y, z}, r, h, Utils::eulerAngles(a1, a2, a3)));
+        } else if (type[0] != '#') {
+            std::cout << "Invalid type detected: " << type << std::endl;
+        }
+    }
 }

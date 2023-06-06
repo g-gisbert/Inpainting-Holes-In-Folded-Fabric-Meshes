@@ -56,13 +56,14 @@ namespace Utils {
 
     AABB getAABB(const VertexPositionGeometry& geom);
 
-    bool checkIntersection(const Triangle &t1, const Triangle &t2) noexcept;
 
     std::tuple<std::unique_ptr<ManifoldSurfaceMesh>, std::unique_ptr<VertexPositionGeometry>>
         createCylinder(double radius, double height, int N = 32, Vector3 center = Vector3::zero(), Eigen::Matrix3d R = Eigen::Matrix3d::Identity());
 
     std::tuple<std::unique_ptr<ManifoldSurfaceMesh>, std::unique_ptr<VertexPositionGeometry>>
         createIcoSphere(double scale, int level, Vector3 center = Vector3::zero());
+
+    Eigen::Matrix3d eulerAngles(double psi, double phi, double theta);
 
     Eigen::Vector3d to_eigen(const Vector3& v);
     Vector3 to_geometrycentral(const Eigen::Vector3d& v);
