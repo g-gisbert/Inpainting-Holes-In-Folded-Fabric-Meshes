@@ -13,11 +13,14 @@ The project requires CGAL to be installed on your computer. It also relies on ge
 polyscope and libIGL as well as a C++17 compiler.
 You can build the project as follows:
 ```
-https://github.com/g-gisbert/Inpainting-Holes-In-Folded-Fabric-Meshes
+git clone https://github.com/g-gisbert/Inpainting-Holes-In-Folded-Fabric-Meshes
 cd Inpainting-Holes-In-Folded-Fabric-Meshes
 mkdir build
 cd build
 cmake ..
 make -j8
 ```
+
+## Run Instructions
+
 
