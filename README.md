@@ -9,7 +9,7 @@ the user to provide a mesh with a hole and to fill it.
 
 ## Build Instructions
 
-The project requires CGAL to be installed on your computer. Here is a linkIt also relies on geometry-central, 
+The project requires CGAL to be installed on your computer. You can find the instructions to install CGAL [here](https://doc.cgal.org/latest/Manual/installation.html) . It also relies on geometry-central, 
 polyscope and libIGL as well as a C++17 compiler.
 You can build the project as follows:
 ```
@@ -27,7 +27,10 @@ You can run the app by issuing:
 ```
 ./bin/pgm <path/to/data_folder>
 ```
-If you use the default folder, you can just 
+If you use the default folder, you can just type:
+```
+./bin/pgm ../data
+```
 
 ## Using the GUI
 
