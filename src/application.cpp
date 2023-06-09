@@ -264,6 +264,7 @@ void Application::callback1() {
         toggle = !toggle;
     }
     if (ImGui::Button("Update Mesh")) {
+
         //polyscope::getSurfaceMesh("Optim")->updateVertexPositions(meshData2D->geom.vertexPositions);
     }
 
