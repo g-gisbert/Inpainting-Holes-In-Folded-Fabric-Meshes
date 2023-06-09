@@ -18,7 +18,7 @@ int Application::highlight = 0;
 int Application::index = 0;
 bool Application::bendingEnergy = true;
 bool Application::radioOption = false;
-bool Application::enableCollisions = false;
+bool Application::enableCollisions = true;
 
 
 void Application::TraverseDirectory(const std::string& path) {
@@ -256,8 +256,6 @@ void Application::callback1() {
         for (int j = 0; j <= 1000; ++j) {
             gd->step(bendingEnergy, enableCollisions);
         }
-        std::cout << "ok";
-        polyscope::getSurfaceMesh("Optim")->addVertexScalarQuantity("abc", meshData2D->repulsiveRadius);
         polyscope::getSurfaceMesh("Optim")->updateVertexPositions(meshData2D->geom.vertexPositions);
     }
     if (ImGui::Button("Toggle")) {
