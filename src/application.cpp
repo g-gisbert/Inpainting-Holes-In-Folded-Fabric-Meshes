@@ -272,7 +272,7 @@ void Application::callback1() {
     }
     ImGui::Separator();
     if (ImGui::Button("Save mesh")) {
-        writeSurfaceMesh(meshData2D->mesh, meshData2D->geom, currentPath + "/surface.obj");
+        writeSurfaceMesh(meshData2D->mesh, meshData2D->geom, "surface.obj");
     }
 
 }
