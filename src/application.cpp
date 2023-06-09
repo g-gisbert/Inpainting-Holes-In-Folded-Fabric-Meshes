@@ -256,13 +256,15 @@ void Application::callback1() {
         for (int j = 0; j <= 1000; ++j) {
             gd->step(bendingEnergy, enableCollisions);
         }
+        std::cout << "ok";
+        polyscope::getSurfaceMesh("Optim")->addVertexScalarQuantity("abc", meshData2D->repulsiveRadius);
         polyscope::getSurfaceMesh("Optim")->updateVertexPositions(meshData2D->geom.vertexPositions);
     }
     if (ImGui::Button("Toggle")) {
         toggle = !toggle;
     }
     if (ImGui::Button("Update Mesh")) {
-        polyscope::getSurfaceMesh("Optim")->updateVertexPositions(meshData2D->geom.vertexPositions);
+        //polyscope::getSurfaceMesh("Optim")->updateVertexPositions(meshData2D->geom.vertexPositions);
     }
 
     if (toggle) {

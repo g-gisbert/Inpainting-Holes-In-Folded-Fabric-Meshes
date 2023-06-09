@@ -17,16 +17,16 @@ public:
     // selection data
     BoundaryLoop BL;
     std::set<Vertex> swallowBorder;
-    std::set<Vertex> border; // ok (thick)
+    std::set<Vertex> border;
     std::set<Vertex> inVertices;
     std::set<Edge> inEdges;
-    std::set<Face> inFaces; // ok
-    VertexData<std::vector<Vertex>> _2Ring; // ok
+    std::set<Face> inFaces;
+    VertexData<std::vector<Vertex>> _2Ring;
 
     // quantitative data
-    EdgeData<double> edgeLengths; // ok
-    VertexData<std::vector<double>> _2RingLengths; // ok
-    std::vector<Eigen::Matrix4d> pQ; // ok
+    EdgeData<double> edgeLengths;
+    VertexData<std::vector<double>> _2RingLengths;
+    std::vector<Eigen::Matrix4d> pQ;
     VertexData<double> repulsiveRadius;
 
     void precomputeData();
