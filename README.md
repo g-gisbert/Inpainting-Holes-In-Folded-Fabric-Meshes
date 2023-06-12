@@ -9,7 +9,7 @@ the user to provide a mesh with a hole and to fill it.
 
 ## Build Instructions
 
-The project requires CGAL to be installed on your computer. You can find the instructions to install CGAL [here](https://doc.cgal.org/latest/Manual/installation.html) . It also relies on geometry-central, 
+The project requires CGAL to be installed on your computer. Instructions for installing CGAL can be found [here](https://doc.cgal.org/latest/Manual/installation.html). It also requires on geometry-central, 
 polyscope and libIGL as well as a C++17 compiler.
 You can build the project as follows:
 ```
@@ -25,12 +25,38 @@ make -j8
 
 You can run the app by issuing:
 ```
-./bin/pgm <path/to/data_folder>
+./bin/pgm <path/to/file>
 ```
-If you use the default folder, you can just type:
+If you want to run the teaser example, you can just type:
 ```
-./bin/pgm ../data
+./bin/pgm ../data/sim1_hole.obj
 ```
+
+## Adding colliding objects
+
+You can edit the config.txt file to add colliding objects to constraint the optimization.
+You can use spheres or cylinders. Each row corresponds to one object. For spheres, you can add them as follows:
+```
+# sphere x y z radius
+sphere 0 0.5 0 1.3
+```
+For cylinders, you must also specify the height and the three Euler angles that control the rotation.
+```
+# cylinder x y z radius height eulerX eulerY eulerZ
+cylinder -3.65421 0.652517 0.0 1 6 0 -1.415462 0
+```
+
+By default, the sphere corresponding to the teaser is active. You can disable it by commenting the line
+with a '#' character at the beginning of the corresponding line.
 
 ## Using the GUI
 
+Hold down the left mouse button and move the mouse to rotate.
+Right-click to move the camera.
+
+In the right panel, you can set up the coefficients for each energy term in the 
+minimization as well as the fixed time step. Then you can choose between two bending energies and enable or disable collisions.
+Finally, there are three buttons. 'Steps' will perform 2000 gradient descent steps, 'Toggle' will continuously optimize the mesh
+and 'Save Mesh' allows you to export the optimized mesh.
+
+To reproduce the teaser example, just press the 'Steps' button.

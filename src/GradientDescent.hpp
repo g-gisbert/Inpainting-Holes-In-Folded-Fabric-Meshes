@@ -10,7 +10,7 @@
 
 class GradientDescent {
 public:
-    explicit GradientDescent(MeshInfo& _meshData) : alpha(0.1), beta(0.0), mu(0.01), timeStep(0.5),
+    explicit GradientDescent(MeshInfo& _meshData) : alpha(0.1), beta(0.02), mu(0.01), timeStep(0.5),
         meshData(_meshData),
         grad(std::vector<Vector3>(meshData.mesh.nVertices(), Vector3::zero())) {
         //objects.push_back(std::make_unique<Sphere>(Vector3{0.0, 0.5, 0.0}, 0.509));

@@ -2,50 +2,21 @@
 
 #include <utility>
 
-State Application::state = CHOOSE_FILE;
 std::unique_ptr<ManifoldSurfaceMesh> Application::mesh;
 std::unique_ptr<VertexPositionGeometry> Application::geometry;
 std::unique_ptr<ManifoldSurfaceMesh> Application::mesh2D;
 std::unique_ptr<VertexPositionGeometry> Application::geometry2D;
-void (*Application::callbacks[2])() = { Application::callback0, Application::callback1 };
-std::string Application::currentPath, Application::filename;
-std::vector<std::string> Application::files, Application::directories;
+std::string Application::filename;
+std::vector<std::string> Application::files;
 MeshInfo* Application::meshData2D = nullptr;
 std::unordered_map<size_t, size_t> Application::matching;
 bool Application::toggle = false;
 GradientDescent* Application::gd = nullptr;
-int Application::highlight = 0;
 int Application::index = 0;
 bool Application::bendingEnergy = true;
 bool Application::radioOption = false;
 bool Application::enableCollisions = true;
 
-
-void Application::TraverseDirectory(const std::string& path) {
-    currentPath = path;
-    files.clear();
-    directories.clear();
-    directories.emplace_back("..");
-    DIR* dir = opendir(path.c_str());
-    if (dir) {
-        struct dirent* ent;
-        while ((ent = readdir(dir)) != nullptr) {
-            struct stat st{};
-            std::string fullpath = path + "/" + ent->d_name;
-            if (stat(fullpath.c_str(), &st) == -1)
-                continue;
-            if (S_ISREG(st.st_mode)) {
-                files.emplace_back(ent->d_name);
-            }
-        }
-        closedir(dir);
-    }
-    std::sort(files.begin(), files.end());
-}
-
-void Application::changeState(State newState) {
-    polyscope::state::userCallback = callbacks[newState];
-}
 
 void Application::show2DMetrics(std::map<size_t, double>& edgeLengths, std::map<size_t, double>& angles) {
     geometry2D->requireVertexAngleSums();
@@ -179,8 +150,27 @@ void Application::make2DMesh() {
 
 void Application::init(const std::string& df) {
     polyscope::init();
-    polyscope::state::userCallback = callbacks[0];
-    TraverseDirectory(df);
+    polyscope::state::userCallback = callback;
+
+    readOBJ(df);
+    make2DMesh();
+    polyscope::registerSurfaceMesh("Mesh", geometry->vertexPositions, mesh->getFaceVertexList());
+    polyscope::getSurfaceMesh("Mesh")->setSmoothShade(true);
+
+    polyscope::registerSurfaceMesh("Border", geometry2D->vertexPositions, mesh2D->getFaceVertexList());
+
+    triangulate(geometry2D, mesh2D);
+
+    meshData2D = new MeshInfo(*mesh2D, *geometry2D);
+    meshData2D->precomputeData();
+    polyscope::registerSurfaceMesh("Parametrisation", geometry2D->vertexPositions, mesh2D->getFaceVertexList());
+
+    Utils::ARAP(*geometry2D, *geometry, *meshData2D, matching, 0.75);
+    gd = new GradientDescent(*meshData2D);
+
+    polyscope::registerSurfaceMesh("Optim", geometry2D->vertexPositions, mesh2D->getFaceVertexList());
+    polyscope::getSurfaceMesh("Optim")->addVertexScalarQuantity("radius", meshData2D->repulsiveRadius);
+    polyscope::getSurfaceMesh("Optim")->setSmoothShade(true);
 
     polyscope::show();
 }
@@ -189,47 +179,8 @@ void Application::readOBJ(const std::string& fn) {
     std::tie(mesh, geometry) = readManifoldSurfaceMesh(fn);
 }
 
-void Application::callback0() {
-    ImGui::Text("Current path: %s", currentPath.c_str());
-    ImGui::Separator();
-    ImGui::Text("Directories:");
-    for (const std::string& dir : directories) {
-        if (ImGui::Selectable(dir.c_str())) {
-            TraverseDirectory(currentPath + "/" + dir);
-        }
-    }
-    ImGui::Separator();
-    ImGui::Text("Files:");
-    for (const std::string& file : files) {
-        if (ImGui::Selectable(file.c_str())) {
-            filename = file;
-        }
-    }
-    ImGui::Separator();
-    if (ImGui::Button("Choose")) {
-        readOBJ(currentPath + "/" + filename);
-        make2DMesh();
-        polyscope::registerSurfaceMesh("Mesh", geometry->vertexPositions, mesh->getFaceVertexList());
 
-        polyscope::registerSurfaceMesh("Border", geometry2D->vertexPositions, mesh2D->getFaceVertexList());
-
-        triangulate(geometry2D, mesh2D, Utils::averageBlEdgeLength(mesh2D->boundaryLoop(1), *geometry2D));
-
-        meshData2D = new MeshInfo(*mesh2D, *geometry2D);
-        meshData2D->precomputeData();
-        polyscope::registerSurfaceMesh("Parametrisation", geometry2D->vertexPositions, mesh2D->getFaceVertexList());
-
-        Utils::ARAP(*geometry2D, *geometry, *meshData2D, matching, 0.75);
-        gd = new GradientDescent(*meshData2D);
-
-        polyscope::registerSurfaceMesh("Optim", geometry2D->vertexPositions, mesh2D->getFaceVertexList());
-        polyscope::getSurfaceMesh("Optim")->addVertexScalarQuantity("radius", meshData2D->repulsiveRadius);
-
-        changeState(OPTI_1D);
-    }
-}
-
-void Application::callback1() {
+void Application::callback() {
 
     ImGui::SliderFloat("Edge Lengths : ", &gd->alpha, 0.0f, 1.0f);
     ImGui::SliderFloat("Bending : ", &gd->beta, 0.0f, 0.1f);
@@ -253,18 +204,16 @@ void Application::callback1() {
 
     ImGui::Separator();
     if (ImGui::Button("Steps")) {
-        for (int j = 0; j <= 1000; ++j) {
+        for (int j = 0; j <= 2000; ++j) {
             gd->step(bendingEnergy, enableCollisions);
         }
         polyscope::getSurfaceMesh("Optim")->updateVertexPositions(meshData2D->geom.vertexPositions);
     }
     if (ImGui::Button("Toggle")) {
         toggle = !toggle;
+        polyscope::getSurfaceMesh("Optim")->updateVertexPositions(meshData2D->geom.vertexPositions);
     }
-    if (ImGui::Button("Update Mesh")) {
 
-        //polyscope::getSurfaceMesh("Optim")->updateVertexPositions(meshData2D->geom.vertexPositions);
-    }
 
     if (toggle) {
         gd->step(bendingEnergy, enableCollisions);
@@ -272,6 +221,7 @@ void Application::callback1() {
     ImGui::Separator();
     if (ImGui::Button("Save mesh")) {
         writeSurfaceMesh(meshData2D->mesh, meshData2D->geom, "surface.obj");
+        std::cout << "Mesh saved as surface.obj" << std::endl;
     }
 
 }
