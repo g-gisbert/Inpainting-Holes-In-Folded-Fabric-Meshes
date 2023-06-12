@@ -130,7 +130,7 @@ int GradientDescent::hash(const Vector3 &v) const noexcept {
 }
 
 void GradientDescent::parseObjects() {
-    std::ifstream file("../../config.txt");
+    std::ifstream file("../config.txt");
     std::string line;
 
     while (std::getline(file, line)) {
