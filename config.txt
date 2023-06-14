@@ -1,4 +1,4 @@
 #{type (sphere or cylinder)} {x} {y} {z} {radius} || only for cylinder || {height} {euler angle x} {euler angle y} {euler angle z}
 #see below two examples
-sphere 0.0 0.5 0.0 0.509
+#sphere 0.0 0.5 0.0 0.509
 #cylinder -3.65421 0.652517 0.0 1 6 0 -1.415462 0

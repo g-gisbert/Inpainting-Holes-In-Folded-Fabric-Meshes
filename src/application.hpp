@@ -14,7 +14,7 @@ public:
     static void init(const std::string& df);
 
     static void readOBJ(const std::string& fn);
-    static void make2DMesh();
+    static void make2DMesh(const std::string& fn);
     static void show2DMetrics(std::map<size_t, double>& edgeLengths, std::map<size_t, double>& angles);
 
     static void callback();
@@ -38,9 +38,6 @@ private:
     static MeshInfo* meshData2D;
     static std::unordered_map<size_t, size_t> matching; // 2D -> 3D
 
-    // Directory
-    static std::string filename;
-    static std::vector<std::string> files;
 };
 
 

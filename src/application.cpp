@@ -6,8 +6,6 @@ std::unique_ptr<ManifoldSurfaceMesh> Application::mesh;
 std::unique_ptr<VertexPositionGeometry> Application::geometry;
 std::unique_ptr<ManifoldSurfaceMesh> Application::mesh2D;
 std::unique_ptr<VertexPositionGeometry> Application::geometry2D;
-std::string Application::filename;
-std::vector<std::string> Application::files;
 MeshInfo* Application::meshData2D = nullptr;
 std::unordered_map<size_t, size_t> Application::matching;
 bool Application::toggle = false;
@@ -24,7 +22,7 @@ void Application::show2DMetrics(std::map<size_t, double>& edgeLengths, std::map<
     double Eangle = 0.0;
     double Eedge = 0.0;
     int N = 0;
-    std::cout << "2D parametrisation" << std::endl;
+    std::cout << "2D parametrization" << std::endl;
     for (const Halfedge& he : BL2.adjacentHalfedges()) {
         double edge = norm(geometry2D->vertexPositions[he.next().vertex()] - geometry2D->vertexPositions[he.vertex()]);
         double edge0 = edgeLengths[matching[he.vertex().getIndex()]];
@@ -41,9 +39,10 @@ void Application::show2DMetrics(std::map<size_t, double>& edgeLengths, std::map<
     std::cout << "Eedge : " << Eedge/N << std::endl;
 }
 
-void Application::make2DMesh() {
+void Application::make2DMesh(const std::string& fn) {
 
-    BoundaryLoop BL = mesh->boundaryLoop(0);
+    int blId = (fn == "../data/sim2_hole.obj") ? 2 : 0; // quick hack for the demo
+    BoundaryLoop BL = mesh->boundaryLoop(blId);
 
     std::map<size_t, double> angles;
     std::map<size_t, double> edgeLengths;
@@ -153,7 +152,7 @@ void Application::init(const std::string& df) {
     polyscope::state::userCallback = callback;
 
     readOBJ(df);
-    make2DMesh();
+    make2DMesh(df);
     polyscope::registerSurfaceMesh("Mesh", geometry->vertexPositions, mesh->getFaceVertexList());
     polyscope::getSurfaceMesh("Mesh")->setSmoothShade(true);
 
@@ -163,9 +162,9 @@ void Application::init(const std::string& df) {
 
     meshData2D = new MeshInfo(*mesh2D, *geometry2D);
     meshData2D->precomputeData();
-    polyscope::registerSurfaceMesh("Parametrisation", geometry2D->vertexPositions, mesh2D->getFaceVertexList());
+    polyscope::registerSurfaceMesh("Parametrization", geometry2D->vertexPositions, mesh2D->getFaceVertexList());
 
-    Utils::ARAP(*geometry2D, *geometry, *meshData2D, matching, 0.75);
+    Utils::ARAP(*geometry2D, *geometry, *meshData2D, matching, 0.5);
     gd = new GradientDescent(*meshData2D);
 
     polyscope::registerSurfaceMesh("Optim", geometry2D->vertexPositions, mesh2D->getFaceVertexList());
@@ -209,14 +208,12 @@ void Application::callback() {
         }
         polyscope::getSurfaceMesh("Optim")->updateVertexPositions(meshData2D->geom.vertexPositions);
     }
-    if (ImGui::Button("Toggle")) {
+    if (ImGui::Button((toggle) ? "Toggle (on)" : "Toggle (off)")) {
         toggle = !toggle;
-        polyscope::getSurfaceMesh("Optim")->updateVertexPositions(meshData2D->geom.vertexPositions);
     }
-
-
     if (toggle) {
         gd->step(bendingEnergy, enableCollisions);
+        polyscope::getSurfaceMesh("Optim")->updateVertexPositions(meshData2D->geom.vertexPositions);
     }
     ImGui::Separator();
     if (ImGui::Button("Save mesh")) {

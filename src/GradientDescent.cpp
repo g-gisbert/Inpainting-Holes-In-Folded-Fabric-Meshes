@@ -102,7 +102,7 @@ void GradientDescent::detectCollisions() noexcept {
                     continue;
                 if (norm(p1.v - p2.v) < meshData.repulsiveRadius[p1.id]) {
                     Vector3 u = (p1.v - p2.v).normalize();
-                    grad[p1.id] -= 0.001*(mu / norm2(p1.v - p2.v)) * u;
+                    grad[p1.id] -= 0.0001*(mu / norm2(p1.v - p2.v)) * u;
                 }
 
             }

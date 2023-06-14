@@ -60,3 +60,15 @@ Finally, there are three buttons. 'Steps' will perform 2000 gradient descent ste
 and 'Save Mesh' allows you to export the optimized mesh.
 
 To reproduce the teaser example, just press the 'Steps' button.
+
+## Typical parameters
+
+Typical parameters you can use for the given examples.
+
+| Filename | Edge Lengths | Bending | Repulsive |
+| --- |--------------|--------| --- |
+| sim1_hole | 0.1 | 0.02   | 0.01 |
+| curtain | 0.1 | 0.003  | 0.01 |
+| contour | 0.1 | 0.003  | 0.01 |
+| paper1 | 0.1 | 0.003  | 0.01 |
+| paper2 | 0.4 | 0.02   | 0.01 |
