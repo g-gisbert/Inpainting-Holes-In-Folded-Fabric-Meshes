@@ -10,8 +10,8 @@ public:
     Sphere(Vector3 c, double _r) : center(c), r(_r) {
         std::unique_ptr<ManifoldSurfaceMesh> mesh;
         std::unique_ptr<VertexPositionGeometry> geometry;
-        std::tie(mesh, geometry) = Utils::createIcoSphere(r, 3, center);
-        polyscope::registerSurfaceMesh("DebugSphere"+std::to_string(count++), geometry->vertexPositions, mesh->getFaceVertexList());
+        std::tie(mesh, geometry) = Utils::createIcoSphere(r*0.97, 3, center);
+        polyscope::registerSurfaceMesh("Debug"+std::to_string(count++), geometry->vertexPositions, mesh->getFaceVertexList());
     }
 
     bool isInside(const Vector3& p) noexcept override;

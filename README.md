@@ -65,10 +65,22 @@ To reproduce the teaser example, just press the 'Steps' button.
 
 Typical parameters you can use for the given examples.
 
-| Filename | Edge Lengths | Bending | Repulsive |
-| --- |--------------|--------| --- |
-| sim1_hole | 0.1 | 0.02   | 0.01 |
-| curtain | 0.1 | 0.003  | 0.01 |
-| contour | 0.1 | 0.003  | 0.01 |
-| paper1 | 0.1 | 0.003  | 0.01 |
-| paper2 | 0.4 | 0.02   | 0.01 |
+| Filename | Edge Lengths | Bending | Repulsive | Bending Energy |
+| --- |--------------|---------| --- |----------------|
+| sim1_hole | 0.1 | 0.02    | 0.01 | Quadratic      |
+| sim2_hole | 0.1 | 0.02    | 0.01 | 2-Ring |
+| curtain | 0.1 | 0.003   | 0.01 | Quadratic      |
+| contour | 0.1 | 0.003   | 0.01 | Quadratic      |
+| paper1 | 0.1 | 0.003   | 0.01 | Quadratic      |
+| paper2 | 0.4 | 0.02    | 0.01 | Quadratic      |
+
+For sim1_hole, make sure the following line is uncommented:
+```
+sphere 0.0 0.5 0.0 0.509
+```
+For sim2_hole uncomment the three last lines:
+```
+cylinder -3.65421 0.652517 0.0 1 6 0 -1.415462 0
+cylinder 0.114316 3.64177 0.0 1 6 0 -0.261799 0
+sphere -0.660382 0.749638 0.0 1.0
+```

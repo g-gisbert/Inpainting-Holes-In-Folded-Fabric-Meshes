@@ -198,7 +198,9 @@ void Application::callback() {
         radioOption = true;
     }
     if (ImGui::Checkbox("Enable collisions", &enableCollisions)) {
-        std::cout << "enableCollisions : " << enableCollisions << std::endl;
+        for(int i = 0; i < gd->nObjects; ++i) {
+            polyscope::getSurfaceMesh("Debug" + std::to_string(i))->setEnabled(enableCollisions);
+        }
     }
 
     ImGui::Separator();

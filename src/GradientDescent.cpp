@@ -22,8 +22,8 @@ void GradientDescent::step(const bool bendingEnergy, const bool enableCollisions
     }
     std::cout << "Elength : " << Elength << std::endl;
 
-    // 2 Ring
     if (!bendingEnergy) {
+        // 2 Ring
         double Ebending = 0.0;
         for (const Vertex &v1: meshData.mesh.vertices()) {
             for (size_t i = 0; i < meshData._2Ring[v1].size(); ++i) {
@@ -36,6 +36,7 @@ void GradientDescent::step(const bool bendingEnergy, const bool enableCollisions
                 u /= norm(u);
                 grad[id1] += beta * (l - normU) * u;
                 grad[id2] -= beta * (l - normU) * u;
+                Ebending += (l - normU) * (l - normU);
             }
         }
         std::cout << "Ebending : " << Ebending << std::endl;
@@ -142,10 +143,12 @@ void GradientDescent::parseObjects() {
             double x, y, z, r;
             iss >> x >> y >> z >> r;
             objects.push_back(std::make_unique<Sphere>(Vector3{x, y, z}, r));
+            nObjects++;
         } else if (type == "cylinder") {
             double x, y, z, r, h, a1, a2, a3;
             iss >> x >> y >> z >> r >> h >> a1 >> a2 >> a3;
             objects.push_back(std::make_unique<Cylinder>(Vector3{x, y, z}, r, h, Utils::eulerAngles(a1, a2, a3)));
+            nObjects++;
         } else if (type[0] != '#') {
             std::cout << "Invalid type detected: " << type << std::endl;
         }

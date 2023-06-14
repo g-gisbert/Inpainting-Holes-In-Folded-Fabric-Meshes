@@ -14,8 +14,8 @@ public:
         up = Vector3{tmp[0], tmp[1], tmp[2]};
         std::unique_ptr<ManifoldSurfaceMesh> mesh;
         std::unique_ptr<VertexPositionGeometry> geometry;
-        std::tie(mesh, geometry) = Utils::createCylinder(_r, _h, 32, center, R);
-        polyscope::registerSurfaceMesh("DebugCylinder"+std::to_string(count++), geometry->vertexPositions, mesh->getFaceVertexList());
+        std::tie(mesh, geometry) = Utils::createCylinder(_r*0.97, _h, 32, center, R);
+        polyscope::registerSurfaceMesh("Debug"+std::to_string(count++), geometry->vertexPositions, mesh->getFaceVertexList());
     }
 
     bool isInside(const Vector3& p) noexcept override;
