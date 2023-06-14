@@ -2,9 +2,9 @@
 #see below some examples
 #
 # Uncomment for sim1_hole.obj
-#sphere 0.0 0.5 0.0 0.509
+sphere 0.0 0.5 0.0 0.509
 #
 # Uncomment for sim2_hole.obj
-cylinder -3.65421 0.652517 0.0 1 6 0 -1.415462 0
-cylinder 0.114316 3.64177 0.0 1 6 0 -0.261799 0
-sphere -0.660382 0.749638 0.0 1.0
+#cylinder -3.65421 0.652517 0.0 1 6 0 -1.415462 0
+#cylinder 0.114316 3.64177 0.0 1 6 0 -0.261799 0
+#sphere -0.660382 0.749638 0.0 1.0
