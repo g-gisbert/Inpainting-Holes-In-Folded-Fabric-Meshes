@@ -1,8 +1,8 @@
 ![Teaser](teaser.png)
 # Inpainting Holes in Folded Fabric Meshes
 
-This repository contains a research prototype implementation of the paper Inpainting Holes in Folded
-Fabric Meshes, SMI 2023. 
+This repository contains a research prototype implementation of the paper [Inpainting Holes in Folded
+Fabric Meshes](https://www.sciencedirect.com/science/article/abs/pii/S0097849323000808), Computers & Graphics. 
 
 The method proposes to fill holes in triangle mesh surfaces representing fabrics. The software allows
 the user to provide a mesh with a hole and to fill it.
