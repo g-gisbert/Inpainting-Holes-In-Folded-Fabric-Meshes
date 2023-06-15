@@ -74,7 +74,7 @@ Typical parameters you can use for the given examples.
 | paper1 | 0.1 | 0.003   | 0.01 | Quadratic      |
 | paper2 | 0.4 | 0.02    | 0.01 | Quadratic      |
 
-For sim1_hole, make sure the following line is uncommented:
+For sim1_hole, make sure the following line is uncommented in config.txt:
 ```
 sphere 0.0 0.5 0.0 0.509
 ```
