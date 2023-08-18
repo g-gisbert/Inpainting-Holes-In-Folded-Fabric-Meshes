@@ -70,15 +70,7 @@ endif()
 
 # == Deps
 include_directories(deps/eigen3)
-if(GC_EIGEN_LOCATION)
-    message(unset)
-endif()
-
 SET(GC_EIGEN_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/deps/eigen3" CACHE INTERNAL "set relative path to eigen" FORCE)
-
-if(GC_EIGEN_LOCATION)
-    message(set)
-endif()
 
 add_subdirectory(deps/geometry-central)
 add_subdirectory(deps/polyscope)
