@@ -69,6 +69,17 @@ endif()
 
 
 # == Deps
+include_directories(deps/eigen3)
+if(GC_EIGEN_LOCATION)
+    message(unset)
+endif()
+
+SET(GC_EIGEN_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/deps/eigen3" CACHE INTERNAL "set relative path to eigen" FORCE)
+
+if(GC_EIGEN_LOCATION)
+    message(set)
+endif()
+
 add_subdirectory(deps/geometry-central)
 add_subdirectory(deps/polyscope)
 find_package(OpenMP REQUIRED)
@@ -80,15 +91,12 @@ link_directories(${CGAL_LIBRARIES_DIR})
 
 # == Build our project stuff
 file(GLOB_RECURSE SRCS src/*)
-
-
-# To change the name of your executable, change "gc_project" in the lines below to whatever you want
 add_executable(pgm "${SRCS}")
 target_include_directories(pgm PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/")
-target_include_directories(pgm PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/deps/libigl/include")
+target_include_directories(pgm PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/deps/libIGL/include")
 
 # add the args.hxx project which we use for command line args
 target_include_directories(pgm PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/deps/polyscope/deps/args")
-target_link_libraries(pgm geometry-central polyscope ${CGAL_LIBRARIES} -lm -I./deps/libigl/include/ OpenMP::OpenMP_CXX)
+target_link_libraries(pgm geometry-central polyscope ${CGAL_LIBRARIES} -lm -I./deps/libIGL/include/ OpenMP::OpenMP_CXX)
 target_precompile_headers(pgm PRIVATE src/pch.h)
 
